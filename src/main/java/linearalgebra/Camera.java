@@ -1,12 +1,11 @@
 package linearalgebra;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 
 
 public class Camera {
 	private Point2D pos; //midpoint of camera
-	private double zoom = 1;
+	private double zoom = Constants.DEFAULT_ZOOM;
 	
 	public Camera(Point2D pos) {
 		this.pos = pos;
@@ -28,16 +27,20 @@ public class Camera {
 		return pos.getY();
 	}
 	
-	public double getTopLeftCornerX() {
+	public double getLeft() {
 		return pos.getX() - getWidth() / 2;
 	}
 	
-	public double getTopLeftCornerY() {
+	public double getTop() {
 		return pos.getY() - getHeight() / 2;
 	}
 	
+	public double getBottom() {
+		return pos.getY() + getHeight() / 2;
+	}
+	
 	public Point2D getTopLeftCorner() {
-		return new Point2D(getTopLeftCornerX(), getTopLeftCornerY());
+		return new Point2D(getLeft(), getTop());
 	}
 	
 	public double getWidth() {
@@ -72,17 +75,13 @@ public class Camera {
 		this.zoom = zoom;
 	}
 	
-	public void render(Graphics2D g) {
-		g.setColor(Color.red);
-		g.drawRect((int) getTopLeftCornerX(), (int) getTopLeftCornerY(), (int) getWidth(), (int) getHeight());
-		
-		Point2D size = getSize();
-		g.setColor(Color.blue);
-		g.drawRect((int) (pos.x - size.x/2), (int) (pos.y - size.y/2), (int) size.x, (int) size.y);
-	}
-	
 	@Override
 	public String toString() {
 		return pos.toString() + ", size: " + getSize() + ", zoom: " + zoom;
+	}
+	
+	public void render(Graphics2D g) {
+		g.drawRect((int)getLeft(), (int)getTop(), (int)getWidth(), (int)getHeight());
+		g.fillOval((int)getLeft(), (int)getBottom() - 100, 100, 100);
 	}
 }

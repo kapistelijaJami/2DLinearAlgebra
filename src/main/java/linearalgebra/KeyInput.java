@@ -56,7 +56,7 @@ public class KeyInput implements MouseInputListener, MouseWheelListener, KeyList
 		} else if (checkMouseButtonMask(e, MouseEvent.BUTTON3_DOWN_MASK) || checkMouseButtonMask(e, MouseEvent.BUTTON2_DOWN_MASK)) {
 			Camera cam = game.getCamera();
 			cam.setX(clickPos.x - diff.x / cam.getZoom());
-			cam.setY(clickPos.y - diff.y / cam.getZoom());
+			cam.setY(clickPos.y + diff.y / cam.getZoom());
 		}
 	}
 	
@@ -73,9 +73,6 @@ public class KeyInput implements MouseInputListener, MouseWheelListener, KeyList
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		Camera cam = game.getCamera();
 		cam.setZoom(cam.getZoom() * (e.getPreciseWheelRotation() == -1 ? 1.25 : 0.8)); //1.25 and 0.8 are exactly opposite zooms
-		System.out.print(cam.getX());
-		System.out.print(" , size: " + cam.getWidth());
-		System.out.println(" , zoom: " + cam.getZoom());
 	}
 	
 	@Override
@@ -92,9 +89,8 @@ public class KeyInput implements MouseInputListener, MouseWheelListener, KeyList
 				break;
 			case KeyEvent.VK_SPACE:
 				Camera cam = game.getCamera();
-				cam.setX(400);
-				cam.setY(0);
-				//cam.setZoom(2);
+				cam.setPos(new Point2D(0, 0));
+				cam.setZoom(Constants.DEFAULT_ZOOM);
 				System.out.println(cam);
 				break;
 		}

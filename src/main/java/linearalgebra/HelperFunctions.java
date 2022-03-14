@@ -8,4 +8,8 @@ public class HelperFunctions {
 	public static double distance(double startX, double startY, double toX, double toY) {
 		return pythagoras(toX - startX, toY - startY);
 	}
+	
+	public static double lerp(double t, double a, double b) {
+		return (1 - t) * a + t * b;
+	}
 }
