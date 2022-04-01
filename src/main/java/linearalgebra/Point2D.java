@@ -1,6 +1,7 @@
 package linearalgebra;
 
-import org.ejml.simple.SimpleMatrix;
+import java.awt.Color;
+import java.awt.Graphics2D;
 
 public class Point2D {
 	public double x, y;
@@ -30,17 +31,12 @@ public class Point2D {
 		this.y = y;
 	}
 	
-	@Override
-	public String toString() {
-		return "(" + x + ", " + y + ")";
+	public Point2D add(double val) {
+		return add(val, val);
 	}
 	
-	public Point2D add(double add) {
-		return add(add, add);
-	}
-	
-	public Point2D add(Point2D o) {
-		return add(o.x, o.y);
+	public Point2D add(Point2D p) {
+		return add(p.x, p.y);
 	}
 	
 	public Point2D add(double x, double y) {
@@ -48,23 +44,27 @@ public class Point2D {
 		this.y += y;
 		return this;
 	}
-
+	
 	public Point2D mult(double mult) {
 		x *= mult;
 		y *= mult;
 		return this;
 	}
 	
+	public Point2D mult(Point2D p) {
+		x *= p.x;
+		y *= p.y;
+		return this;
+	}
+	
+	public Point2D div(Point2D p) {
+		x /= p.x;
+		y /= p.y;
+		return this;
+	}
+	
 	public Point2D rotated(double degrees) {
-		double rad = Math.toRadians(degrees);
-		SimpleMatrix m = new SimpleMatrix(
-				new double[][] {
-					{Math.cos(rad), -Math.sin(rad)},
-					{Math.sin(rad), Math.cos(rad)}
-				});
-		
-		SimpleMatrix res = m.mult(new SimpleMatrix(new double[][] {{x}, {y}}));
-		return new Point2D(res.get(0), res.get(1));
+		return Matrix2D.rotation(degrees).mult(this);
 	}
 	
 	//distance from origo
@@ -79,6 +79,10 @@ public class Point2D {
 			y /= magnitude;
 		}
 		return this;
+	}
+	
+	public Point2D normalized() {
+		return copy().normalize();
 	}
 	
 	public Point2D negate() {
@@ -101,13 +105,78 @@ public class Point2D {
 		return right ? p : p.negate();
 	}
 	
+	public boolean isPerpendicular(Point2D p) {
+		if (isZero() || p.isZero()) {
+			return false;
+		}
+		return dot(p) == 0;
+	}
+	
+	public boolean isSameDirection(Point2D p) {
+		return dot(p) > 0;
+	}
+	
+	public boolean isOppositeDirection(Point2D p) {
+		return dot(p) < 0;
+	}
+	
+	public boolean isParallel(Point2D p) {
+		if (isZero() || p.isZero()) {
+			return false;
+		}
+		return cross(p) == 0;
+	}
+	
+	public boolean isZero() {
+		return x == 0 && y == 0;
+	}
+	
 	/**
 	 * Length of the would be 3D cross product (which is perpendicular to both of the vectors).
 	 * Also the area of the parallellogram made by the two vectors.
+	 * Is positive, when this is on the right side of p. Negative otherwise.
+	 * If 0, vectors are parallel, or at least one vector has a magnitude of 0.
 	 * @param p
 	 * @return 
 	 */
 	public double cross(Point2D p) {
 		return x * p.y - p.x * y;
+	}
+	
+	/**
+	 * Returns the angle between the two vectors.
+	 * Formula works for unit vectors, that's why it normalizes them first.
+	 * @param p
+	 * @return 
+	 */
+	public double angleBetween(Point2D p) {
+		return Math.toDegrees(Math.acos(normalized().dot(p.normalized()))); //Source: https://www.youtube.com/watch?v=DPfxjQ6sqrc
+	}
+	
+	/**
+	 * Returns the angle between the two vectors.
+	 * Assumes the vectors are unit vectors (length 1).
+	 * Doesn't use many computationally intensive calculations. (Only acos, which is a must anyway)
+	 * @param p
+	 * @return 
+	 */
+	public double angleBetweenUnitVectors(Point2D p) {
+		return Math.toDegrees(Math.acos(dot(p))); //Source: https://www.youtube.com/watch?v=DPfxjQ6sqrc
+	}
+	
+	public void render(Graphics2D g) {
+		g.setColor(Color.blue);
+		int size = (int) Math.max(1, Game.GAME.screenToWorldUnits(8));
+		g.fillOval((int) (Game.gridToPixels(x) - size / 2), (int) (Game.gridToPixels(y) - size / 2), size, (int) size);
+	}
+	
+	public void renderAsLineSegment(Graphics2D g) {
+		new LineSegment(this).render(g, Color.blue);
+		render(g);
+	}
+	
+	@Override
+	public String toString() {
+		return "(" + x + ", " + y + ")";
 	}
 }
