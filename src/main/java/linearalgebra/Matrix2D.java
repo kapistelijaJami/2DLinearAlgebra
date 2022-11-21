@@ -1,32 +1,37 @@
 package linearalgebra;
 
 /**
+ * 
  * Matrix2D class.
- * Has a 2 by 2 matrix, with added third column for a translation. (Making it an affineTransform)
+ * Has a 2 by 2 matrix, with added third column for a translation. (Making it an AffineTransform)
  * 
  * Matrix and vector multiplication:
  * 
+ * <pre>
  * [ a  c  e ]   [ x ]   [ a * x + c * y + e ]
  * [ b  d  f ] * [ y ] = [ b * x + d * y + f ]
  *               [ 1 ]
- * 
+ * </pre>
  * The 1 is automatically there for the translate in this example. This is 2d vector multiplication.
  * 
  * Matrix and matrix multiplication:
  * 
+ * <pre>
  * [ A  C  E ]   [ a  c  e ]   [ A * a + C * b    A * c + C * d    A * e + C * f + E ]
  * [ B  D  F ] * [ b  d  f ] = [ B * a + D * b    B * c + D * d    B * e + D * f + F ]
  *               [ 0  0  1 ]   
- * 
+ * </pre>
  * The 0, 0, 1 row is automatically there to make the calculation work in this example.
  * Right matrix is the first to apply (current matrix, small letters), the left one is the latter one (given as parameter, shown in big letters).
  * 
+ * <pre>
  * a is the scale of x direction. (How will the x axis get scaled)
  * b is the shear of up and down. (Everything right side of origo will get more positive y with positive value)
  * c is the shear of left and right. (Everything above of origo will get more positive x with positive value)
  * d is the scale of y direction. (How will the y axis get scaled)
  * e is just the translation in x direction. Defaulting to 0.
  * f is just the translation in y direction. Defaulting to 0.
+ * </pre>
  */
 public class Matrix2D {
 	//Order:
