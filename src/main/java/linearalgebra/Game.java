@@ -192,11 +192,11 @@ public class Game extends Canvas implements Runnable {
 	}
 	
 	//These do completely different thing than the one above
-	private static Point2D convertScreenToWorld(Point2D p) {
+	public static Point2D convertScreenToWorld(Point2D p) {
 		return new Point2D(cam.getX() - (-p.x + WIDTH/2) / cam.getZoom(), cam.getY() - (p.y - HEIGHT/2) / cam.getZoom());
 	}
 	
-	private static Point2D convertWorldToScreen(Point2D p) {
+	public static Point2D convertWorldToScreen(Point2D p) {
 		return new Point2D((p.x - cam.getX()) * cam.getZoom() + WIDTH/2, (p.y + cam.getY()) * cam.getZoom() + HEIGHT/2);
 	}
 	

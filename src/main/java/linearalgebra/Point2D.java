@@ -2,6 +2,7 @@ package linearalgebra;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 
 public class Point2D {
 	public double x, y;
@@ -9,6 +10,10 @@ public class Point2D {
 	public Point2D(double x, double y) {
 		this.x = x;
 		this.y = y;
+	}
+	
+	public Point2D(Point p) {
+		this(p.x, p.y);
 	}
 	
 	public Point2D copy() {
@@ -45,6 +50,16 @@ public class Point2D {
 		return this;
 	}
 	
+	public Point2D subtract(Point2D p) {
+		return subtract(p.x, p.y);
+	}
+	
+	public Point2D subtract(double x, double y) {
+		this.x -= x;
+		this.y -= y;
+		return this;
+	}
+	
 	public Point2D mult(double mult) {
 		x *= mult;
 		y *= mult;
@@ -54,6 +69,12 @@ public class Point2D {
 	public Point2D mult(Point2D p) {
 		x *= p.x;
 		y *= p.y;
+		return this;
+	}
+	
+	public Point2D div(double div) {
+		x /= div;
+		y /= div;
 		return this;
 	}
 	
@@ -99,6 +120,11 @@ public class Point2D {
 		return x * p.x + y * p.y;
 	}
 	
+	/**
+	 * Creates a perpendicular vector.
+	 * @param right If true, will be rotated clockwise 90 degrees, counterclockwise otherwise.
+	 * @return 
+	 */
 	public Point2D perpendicular(boolean right) {
 		Point2D p = new Point2D(y, -x);
 		
@@ -134,7 +160,7 @@ public class Point2D {
 	/**
 	 * Length of the would be 3D cross product (which is perpendicular to both of the vectors).
 	 * Also the area of the parallellogram made by the two vectors.
-	 * Is positive, when this is on the right side of p. Negative otherwise.
+	 * Is positive when this is on the right side of p. Negative otherwise.
 	 * If 0, vectors are parallel, or at least one vector has a magnitude of 0.
 	 * @param p
 	 * @return 
@@ -156,12 +182,12 @@ public class Point2D {
 	/**
 	 * Returns the angle between the two vectors.
 	 * Assumes the vectors are unit vectors (length 1).
-	 * Doesn't use many computationally intensive calculations. (Only acos, which is a must anyway)
+	 * Doesn't use many computationally intensive calculations, like sqrt. (Only acos, which is a must anyway)
 	 * @param p
 	 * @return 
 	 */
 	public double angleBetweenUnitVectors(Point2D p) {
-		return Math.toDegrees(Math.acos(dot(p))); //Source: https://www.youtube.com/watch?v=DPfxjQ6sqrc
+		return Math.toDegrees(Math.acos(this.dot(p))); //Source: https://www.youtube.com/watch?v=DPfxjQ6sqrc
 	}
 	
 	public void render(Graphics2D g) {
@@ -175,8 +201,23 @@ public class Point2D {
 		render(g);
 	}
 	
+	/**
+	 * Creates a new Point that is the orthogonal projection of this to p.
+	 * @param p
+	 * @return 
+	 */
+	public Point2D projectTo(Point2D p) {
+		return p.mult(this.dot(p) / p.dot(p));
+	}
+	
 	@Override
 	public String toString() {
 		return "(" + x + ", " + y + ")";
+	}
+
+	public Point2D round() {
+		x = Math.round(x);
+		y = Math.round(y);
+		return this;
 	}
 }

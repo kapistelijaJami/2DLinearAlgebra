@@ -3,7 +3,6 @@ package linearalgebra;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-
 public class Camera {
 	private Point2D pos; //midpoint of camera
 	private double zoom = Constants.DEFAULT_ZOOM;

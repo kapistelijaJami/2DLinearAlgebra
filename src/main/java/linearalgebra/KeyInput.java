@@ -72,7 +72,15 @@ public class KeyInput implements MouseInputListener, MouseWheelListener, KeyList
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		Camera cam = game.getCamera();
-		cam.setZoom(cam.getZoom() * (e.getPreciseWheelRotation() == -1 ? 1.25 : 0.8)); //1.25 and 0.8 are exactly opposite zooms
+		
+		double zoomDelta = e.getPreciseWheelRotation() == -1 ? 1.25 : 0.8; //1.25 and 0.8 are exactly opposite zooms
+		
+		Point2D p = Game.convertScreenToWorld(new Point2D(e.getPoint())).round();
+		Point2D diff = cam.getPos().subtract(p); //vector from p to cam mid pos
+		Point2D res = diff.div(zoomDelta).round();
+		cam.setPos(p.add(res));
+		
+		cam.setZoom(cam.getZoom() * zoomDelta);
 	}
 	
 	@Override
